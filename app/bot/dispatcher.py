@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from redis.asyncio import Redis
 
 from app.bot.handlers import monitor, otp, register, start
-from app.bot.middlewares.db import DBSessionMiddleware
+from app.bot.middlewares.db import DBSessionMiddleware, RedisMiddleware
 from app.config import settings
 
 
@@ -18,12 +18,7 @@ def build_dispatcher(redis: Redis) -> Dispatcher:
     dp = Dispatcher(storage=storage)
 
     dp.update.middleware(DBSessionMiddleware())
-
-    async def inject_redis(handler, event, data):
-        data["redis"] = redis
-        return await handler(event, data)
-
-    dp.update.middleware(inject_redis)
+    dp.update.middleware(RedisMiddleware(redis))
 
     dp.include_router(start.router)
     dp.include_router(register.router)

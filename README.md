@@ -14,10 +14,14 @@ Python 3.12, aiogram 3, Playwright (Chromium + stealth), SQLAlchemy 2.0 (async),
 
 ## Быстрый старт (локально)
 
+Подробная пошаговая инструкция: см. [QUICKSTART.md](./QUICKSTART.md).
+
+Кратко:
+
 ```bash
 cp .env.example .env
 # Сгенерируйте ключ шифрования:
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 # Вставьте его в BOT_ENCRYPTION_KEY, добавьте BOT_TOKEN от @BotFather.
 
 docker compose up -d postgres redis

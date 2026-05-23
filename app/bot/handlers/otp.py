@@ -1,20 +1,21 @@
 import re
 
 from aiogram import F, Router
+from aiogram.filters import StateFilter
 from aiogram.types import Message
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot.texts import t
 from app.db.repository import ApplicantRepository, MonitoringTaskRepository, UserRepository
-from app.monitor.otp_bridge import publish_otp_response, pending_request_key_for_task
+from app.monitor.otp_bridge import pending_request_key_for_task, publish_otp_response
 
 router = Router(name="otp")
 
 OTP_RE = re.compile(r"^\s*(\d{6})\s*$")
 
 
-@router.message(F.text.regexp(r"^\s*\d{4,8}\s*$"))
+@router.message(StateFilter(None), F.text.regexp(r"^\s*\d{4,8}\s*$"))
 async def maybe_otp(message: Message, session: AsyncSession, redis: Redis) -> None:
     if message.from_user is None or message.text is None:
         return
